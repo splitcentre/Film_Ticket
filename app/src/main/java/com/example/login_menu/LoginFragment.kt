@@ -2,10 +2,13 @@ package com.example.login_menu
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import com.example.login_menu.databinding.FragmentLoginBinding
 
 private const val ARG_PARAM1 = "param1"
@@ -21,35 +24,37 @@ class LoginFragment : Fragment() {
     private var param2: String? = null
     private lateinit var binding: FragmentLoginBinding // Use the correct binding class
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            param1 = it.getString(ARG_PARAM1)
+            param2 = it.getString(ARG_PARAM2)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLoginBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+        val rootView = inflater.inflate(R.layout.fragment_login, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        val usernameEditText = rootView.findViewById<EditText>(R.id.usernameEditText)
+        val passwordEditText = rootView.findViewById<EditText>(R.id.passwordEditText)
+        val loginButton = rootView.findViewById<Button>(R.id.loginButton)
 
-        binding.loginButton.setOnClickListener {
-            val username = binding.usernameEditText.text.toString()
-            val intent = Intent(requireContext(), MainActivity::class.java)
-            intent.putExtra(EXTRA_NAME, username)
+        loginButton.setOnClickListener {
+            Log.d("LoginFragment", "Button Clicked")
+            val username = usernameEditText.text.toString()
+            val password = passwordEditText.text.toString()
+            val intent = Intent(activity, MainActivity::class.java)
+            intent.putExtra("username", username)
+            intent.putExtra("password", password)
             startActivity(intent)
+            // Inflate the layout for this fragment
+
         }
+
+        return rootView
     }
 
-    companion object {
-        const val EXTRA_NAME = "extra_name"
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LoginFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

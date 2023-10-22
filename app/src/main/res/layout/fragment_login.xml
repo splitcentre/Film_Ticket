@@ -43,7 +43,7 @@
         android:layout_below="@+id/createAccountTextView"
         android:layout_centerHorizontal="true"
         android:text="Create new account"
-        android:textSize="14"
+        android:textSize="14dp"
         android:textColor="@android:color/holo_blue_dark"
         tools:layout_editor_absoluteX="143dp"
         tools:layout_editor_absoluteY="630dp" />

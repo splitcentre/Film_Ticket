@@ -24,17 +24,7 @@
 
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/NewAccountTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/createAccountTextView"
-        android:layout_centerHorizontal="true"
-        android:text="Create new account"
-        android:textSize="14"
-        android:textColor="@android:color/holo_blue_dark"
-        tools:layout_editor_absoluteX="143dp"
-        tools:layout_editor_absoluteY="630dp" />
+
 
     <RelativeLayout
         android:layout_width="340dp"
