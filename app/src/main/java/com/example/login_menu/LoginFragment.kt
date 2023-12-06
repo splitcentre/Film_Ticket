@@ -57,7 +57,17 @@ class LoginFragment : Fragment() {
                 .addOnCompleteListener(requireActivity()) { task ->
                     if (task.isSuccessful) {
                         Log.d("LoginFragment", "Authentication success")
-                        val intent = Intent(activity, MainActivity::class.java)
+
+                        // Determine user role (admin or user) based on username
+                        val isUserAdmin = username.endsWith("@mail.org")
+
+                        // Create an intent based on user role
+                        val intent = if (isUserAdmin) {
+                            Intent(activity, AdminActivity::class.java)
+                        } else {
+                            Intent(activity, MainActivity::class.java)
+                        }
+
                         startActivity(intent)
                     } else {
                         Log.w("LoginFragment", "Authentication failed", task.exception)

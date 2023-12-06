@@ -46,7 +46,10 @@
         android:textSize="14dp"
         android:textColor="@android:color/holo_blue_dark"
         tools:layout_editor_absoluteX="143dp"
-        tools:layout_editor_absoluteY="630dp" />
+        tools:layout_editor_absoluteY="630dp"
+        android:clickable="true"
+        android:onClick="onCreateAccountClicked" />
+
 
     <RelativeLayout
         android:layout_marginStart="35dp"
@@ -111,7 +114,7 @@
             android:layout_marginBottom="16dp"
             android:layout_centerHorizontal="true"
             android:textSize="10dp"
-            android:text="Forgot Password?"
+            android:text="Create New Account"
             android:textColor="@android:color/holo_blue_dark"
             app:layout_constraintBottom_toTopOf="@+id/loginButton"
             tools:ignore="MissingConstraints"
