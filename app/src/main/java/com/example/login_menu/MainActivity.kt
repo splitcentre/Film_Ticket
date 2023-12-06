@@ -8,7 +8,11 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentPagerAdapter
 import com.example.login_menu.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class
+
+
+
+MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

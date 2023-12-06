@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import com.example.login_menu.databinding.FragmentLoginBinding
+import com.google.firebase.auth.FirebaseAuth
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -22,7 +23,8 @@ private const val ARG_PARAM2 = "param2"
 class LoginFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var binding: FragmentLoginBinding // Use the correct binding class
+    private lateinit var binding: FragmentLoginBinding
+    private lateinit var auth: FirebaseAuth // Firebase Authentication instance
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,9 @@ class LoginFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        // Initialize Firebase Authentication
+        auth = FirebaseAuth.getInstance()
     }
 
     override fun onCreateView(
@@ -46,15 +51,21 @@ class LoginFragment : Fragment() {
             Log.d("LoginFragment", "Button Clicked")
             val username = usernameEditText.text.toString()
             val password = passwordEditText.text.toString()
-            val intent = Intent(activity, MainActivity::class.java)
-            intent.putExtra("username", username)
-            intent.putExtra("password", password)
-            startActivity(intent)
-            // Inflate the layout for this fragment
 
+            // Authenticate using Firebase Authentication
+            auth.signInWithEmailAndPassword(username, password)
+                .addOnCompleteListener(requireActivity()) { task ->
+                    if (task.isSuccessful) {
+                        Log.d("LoginFragment", "Authentication success")
+                        val intent = Intent(activity, MainActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        Log.w("LoginFragment", "Authentication failed", task.exception)
+                        // Handle authentication failure, e.g., display an error message
+                    }
+                }
         }
 
         return rootView
     }
-
 }

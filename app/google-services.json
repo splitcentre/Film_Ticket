@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "722708836743",
+    "project_id": "movie-ticket-8020f",
+    "storage_bucket": "movie-ticket-8020f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722708836743:android:7cefcdecc4ac7410282322",
+        "android_client_info": {
+          "package_name": "com.example.login_menu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7QXSScMD3KCj785e0MMCNrkuGCFAV4AI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
