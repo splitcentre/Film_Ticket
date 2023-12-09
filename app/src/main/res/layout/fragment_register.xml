@@ -5,26 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:background="#777777"
     tools:context=".MainActivity">
-
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/loginCardView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:elevation="4dp"
-        app:cardCornerRadius="16dp">
-
-    </androidx.cardview.widget.CardView>
-
-
 
     <RelativeLayout
         android:layout_width="340dp"
@@ -47,12 +28,6 @@
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="102dp" />
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/logoImageView"
-            android:layout_margin="16dp"
-            tools:ignore="MissingConstraints" />
 
         <EditText
             android:id="@+id/emailEditText"
@@ -62,11 +37,11 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
             android:background="#B3B3B3"
-            android:hint="Username"
+            android:hint="Email"
             android:inputType="text"
             android:padding="12dp"
             android:textSize="19dp"
-            app:layout_constraintBottom_toTopOf="@+id/editText"
+            app:layout_constraintBottom_toTopOf="@+id/passwordEditText"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="18dp" />
 
@@ -82,34 +57,9 @@
             android:inputType="text"
             android:padding="12dp"
             android:textSize="19dp"
-            app:layout_constraintBottom_toTopOf="@+id/editText"
+            app:layout_constraintBottom_toTopOf="@+id/passwordEditText"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="18dp" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/passwordEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/usernameEditText"
-            android:layout_margin="16dp"
-            tools:ignore="MissingConstraints">
-
-        </androidx.cardview.widget.CardView>
-
-
-        <androidx.cardview.widget.CardView
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/confirmpass"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            tools:ignore="MissingConstraints">
-
-        </androidx.cardview.widget.CardView>
 
         <Button
             android:id="@+id/registerButton"
@@ -127,7 +77,7 @@
             tools:ignore="MissingConstraints" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/passwordEditText"
             android:layout_width="305dp"
             android:layout_height="44dp"
             android:layout_below="@id/usernameEditText"
@@ -147,7 +97,7 @@
             android:id="@+id/confirmpass"
             android:layout_width="305dp"
             android:layout_height="44dp"
-            android:layout_below="@id/editText"
+            android:layout_below="@id/passwordEditText"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="12dp"
             android:background="#B3B3B3"

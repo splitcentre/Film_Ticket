@@ -96,7 +96,8 @@ class RegisterFragment : Fragment() {
         // Hash the password
         val hashedPassword = hashPassword(userEmail ?: "")
 
-        val adminUser = User(userId, userEmail, "Admin", hashedPassword)
+        val adminUser = User(userId, userEmail, "Admin", "admin_username", hashedPassword)
+        // Replace "admin_username" with the actual admin username or generate it based on your requirements
 
         // Store the user data in Firebase Realtime Database
         // Replace "users" with your desired database reference
@@ -118,7 +119,8 @@ class RegisterFragment : Fragment() {
         // Hash the password
         val hashedPassword = hashPassword(userEmail ?: "")
 
-        val regularUser = User(userId, userEmail, "User", hashedPassword)
+        val regularUser = User(userId, userEmail, "User", "user_username", hashedPassword)
+        // Replace "user_username" with the actual user username or generate it based on your requirements
 
         // Store the user data in Firebase Realtime Database
         // Replace "users" with your desired database reference
