@@ -68,6 +68,8 @@ class LoginFragment : Fragment() {
                             Intent(activity, MainActivity::class.java)
                         }
 
+                        // Pass the username to the next activity
+                        intent.putExtra("USERNAME", username)
                         startActivity(intent)
                     } else {
                         Log.w("LoginFragment", "Authentication failed", task.exception)

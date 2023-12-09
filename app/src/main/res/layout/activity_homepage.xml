@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AdminActivity"
-    android:orientation="vertical">
-
+    tools:context=".Homepage">
     <TextView
         android:id="@+id/hello"
         android:orientation="vertical"
@@ -20,7 +18,5 @@
         app:layout_constraintTop_toBottomOf="@+id/hello"
         android:text="Karto"
         android:textSize="25dp"/>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
