@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
+
+    <ImageView
+        android:id="@+id/film_image"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:layout_marginHorizontal="2dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/film_ex"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/txt_film_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="5dp"
+        android:text="In The Mouth of Madness"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/film_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_release_date"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="5dp"
+        android:textSize="10sp"
+        android:text="Release Date:"
+        app:layout_constraintStart_toEndOf="@+id/film_image"
+        app:layout_constraintTop_toBottomOf="@+id/txt_film_name" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="5dp"
+        android:text="1994"
+        android:textSize="10sp"
+        app:layout_constraintStart_toEndOf="@+id/txt_release_date"
+        app:layout_constraintTop_toBottomOf="@+id/txt_film_name" />
+
+    <TextView
+        android:id="@+id/Rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="5dp"
+        android:text="Rating :"
+        android:textSize="10sp"
+        app:layout_constraintStart_toEndOf="@+id/film_image"
+        app:layout_constraintTop_toBottomOf="@+id/txt_release_date" />
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="5dp"
+        android:numStars="5"
+        android:rating="3.5"
+        android:stepSize="0.5"
+        style="?android:attr/ratingBarStyleSmall"
+        app:layout_constraintStart_toEndOf="@+id/Rating"
+        app:layout_constraintTop_toBottomOf="@+id/txt_release_date" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

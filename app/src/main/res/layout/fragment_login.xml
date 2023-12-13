@@ -22,18 +22,11 @@
             android:layout_height="113dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_launcher_foreground"
+            android:src="@drawable/logo"
             app:layout_constraintBottom_toTopOf="@+id/usernameEditText"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="102dp" />
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/logoImageView"
-            android:layout_margin="16dp"
-            tools:ignore="MissingConstraints" />
 
         <EditText
             android:id="@+id/usernameEditText"

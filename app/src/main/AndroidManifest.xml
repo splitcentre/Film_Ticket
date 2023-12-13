@@ -13,6 +13,12 @@
         android:theme="@style/Base.Theme._17Okt"
         tools:targetApi="31">
         <activity
+            android:name=".FilmDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddFilm"
+            android:exported="false" />
+        <activity
             android:name=".Homepage"
             android:exported="false" />
         <activity

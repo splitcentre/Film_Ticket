@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FilmDetailsActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_withback"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/film_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@+id/toolbar"
+    android:layout_marginVertical="25dp"
+        tools:ignore="MissingConstraints">
+
+    <ImageView
+        android:id="@+id/film_image"
+        android:layout_width="200dp"
+        android:layout_height="300dp"
+        android:layout_marginHorizontal="2dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/film_ex"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/txt_film_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="5dp"
+        android:text="In The Mouth of Madness"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/film_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_release_date"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="5dp"
+        android:textSize="10sp"
+        android:text="Release Date:"
+        app:layout_constraintStart_toEndOf="@+id/film_image"
+        app:layout_constraintTop_toBottomOf="@+id/txt_film_name" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="5dp"
+        android:text="1994"
+        android:textSize="10sp"
+        app:layout_constraintStart_toEndOf="@+id/txt_release_date"
+        app:layout_constraintTop_toBottomOf="@+id/txt_film_name" />
+
+    <TextView
+        android:id="@+id/txt_synopsis"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="5dp"
+        android:text="Synopsis  :"
+        android:textSize="10sp"
+        app:layout_constraintStart_toEndOf="@+id/film_image"
+        app:layout_constraintTop_toBottomOf="@+id/txt_release_date" />
+
+    <TextView
+        android:id="@+id/synopsis"
+        android:layout_width="185dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="5dp"
+        android:text="When horror novelist Sutter Cane (Jürgen Prochnow) goes missing, insurance investigator John Trent (Sam Neill) scrutinizes the claim made by his publisher, Jackson Harglow (Charlton Heston), and endeavors to retrieve a yet-to-be-released manuscript and ascertain the writer's whereabouts. Accompanied by the novelist's editor, Linda Styles (Julie Carmen), and disturbed by nightmares from reading Cane's other novels, Trent makes an eerie nighttime trek to a supernatural town in New Hampshire."
+        android:textSize="10sp"
+        app:layout_constraintTop_toBottomOf="@+id/txt_synopsis"
+        app:layout_constraintStart_toEndOf="@id/film_image"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

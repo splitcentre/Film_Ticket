@@ -94,7 +94,7 @@ class RegisterFragment : Fragment() {
         val userEmail = user?.email ?: ""
 
         // Hash the password
-        val hashedPassword = hashPassword(userEmail ?: "")
+        val hashedPassword = hashPassword(userEmail)
 
         val adminUser = User(userId, userEmail, "Admin", "admin_username", hashedPassword)
         // Replace "admin_username" with the actual admin username or generate it based on your requirements
@@ -117,7 +117,7 @@ class RegisterFragment : Fragment() {
         val userEmail = user?.email ?: ""
 
         // Hash the password
-        val hashedPassword = hashPassword(userEmail ?: "")
+        val hashedPassword = hashPassword(userEmail)
 
         val regularUser = User(userId, userEmail, "User", "user_username", hashedPassword)
         // Replace "user_username" with the actual user username or generate it based on your requirements

@@ -12,7 +12,7 @@
         android:layout_height="540dp"
         android:layout_marginStart="35dp"
         android:layout_marginEnd="35dp"
-        android:background="@color/white"
+        android:background="#FFFFFF"
         tools:layout_editor_absoluteX="27dp"
         tools:layout_editor_absoluteY="209dp">
 
@@ -22,7 +22,7 @@
             android:layout_height="113dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_launcher_foreground"
+            android:src="@drawable/logo"
             app:layout_constraintBottom_toTopOf="@+id/usernameEditText"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints"
