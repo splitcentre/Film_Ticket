@@ -12,7 +12,7 @@ import com.example.login_menu.databinding.FragmentRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore  // Import this line
 import java.security.MessageDigest
 
 private const val ARG_PARAM1 = "param1"
@@ -23,6 +23,7 @@ class RegisterFragment : Fragment() {
     private var param2: String? = null
     private lateinit var binding: FragmentRegisterBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore  // Declare db at the class level
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +33,7 @@ class RegisterFragment : Fragment() {
         }
 
         auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()  // Initialize db
     }
 
     override fun onCreateView(
@@ -39,7 +41,6 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_register, container, false)
-
         val emailEditText = rootView.findViewById<EditText>(R.id.emailEditText)
         val usernameEditText = rootView.findViewById<EditText>(R.id.usernameEditText)
         val passwordEditText = rootView.findViewById<EditText>(R.id.passwordEditText)
@@ -105,9 +106,9 @@ class RegisterFragment : Fragment() {
 
         val userObject = User(userId, userEmail, username, role, hashedPassword)
 
-        // Store the user data in Firebase Realtime Database
-        FirebaseDatabase.getInstance().getReference("users").child(userId)
-            .setValue(userObject)
+        // Store the user data in Firestore
+        db.collection("users").document(userId)
+            .set(userObject)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     showToast("$role role granted!")
@@ -116,9 +117,10 @@ class RegisterFragment : Fragment() {
                     if (role == "Admin") {
                         grantAdminPermissions(userId)
                     }
-
                 } else {
-                    showToast("Failed to grant $role role: ${task.exception?.message}")
+                    val errorMessage = "Failed to grant $role role: ${task.exception?.message}"
+                    showToast(errorMessage)
+                    Log.e("GrantUserRole", errorMessage, task.exception)
                 }
             }
     }
