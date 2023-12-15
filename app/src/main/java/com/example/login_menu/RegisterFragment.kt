@@ -112,7 +112,6 @@ class RegisterFragment : Fragment() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     showToast("$role role granted!")
-
                     // Check the role and grant additional permissions if it's an admin
                     if (role == "Admin") {
                         grantAdminPermissions(userId)
@@ -126,9 +125,6 @@ class RegisterFragment : Fragment() {
     }
 
     private fun grantAdminPermissions(userId: String) {
-        // Implement the logic to grant admin-specific permissions here
-        // This could include adding the user to an "admins" node in the database, etc.
-        // For demonstration purposes, let's log a message.
         Log.d("GrantAdminPermissions", "Admin permissions granted for user: $userId")
     }
 
