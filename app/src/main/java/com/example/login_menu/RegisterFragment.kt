@@ -1,13 +1,12 @@
 package com.example.login_menu
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
+import androidx.fragment.app.Fragment
 import com.example.login_menu.database.User
 import com.example.login_menu.databinding.FragmentRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -42,19 +41,35 @@ class RegisterFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_register, container, false)
 
         val emailEditText = rootView.findViewById<EditText>(R.id.emailEditText)
+        val usernameEditText = rootView.findViewById<EditText>(R.id.usernameEditText)
         val passwordEditText = rootView.findViewById<EditText>(R.id.passwordEditText)
+        val confirmPasswordEditText = rootView.findViewById<EditText>(R.id.confirmpass)
+        val roleSpinner = rootView.findViewById<Spinner>(R.id.role)
         val registerButton = rootView.findViewById<Button>(R.id.registerButton)
+
+        // Set up the spinner with the list of roles
+        val roles = resources.getStringArray(R.array.role)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, roles)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        roleSpinner.adapter = adapter
 
         registerButton.setOnClickListener {
             val email = emailEditText.text.toString()
+            val username = usernameEditText.text.toString()
             val password = passwordEditText.text.toString()
+            val confirmPassword = confirmPasswordEditText.text.toString()
+            val selectedRole = roleSpinner.selectedItem.toString()
+
+            // Check if passwords match
+            if (password != confirmPassword) {
+                showToast("Passwords do not match.")
+                return@setOnClickListener
+            }
 
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(requireActivity()) { task ->
                     if (task.isSuccessful) {
                         val user = auth.currentUser
-
-                        // Update user profile with hashed email as the display name
                         val profileUpdates = UserProfileChangeRequest.Builder()
                             .setDisplayName(hashEmail(email))
                             .build()
@@ -62,26 +77,20 @@ class RegisterFragment : Fragment() {
                         user?.updateProfile(profileUpdates)
                             ?.addOnCompleteListener { profileUpdateTask ->
                                 if (profileUpdateTask.isSuccessful) {
-                                    val isUserAdmin = email.endsWith("@mail.org")
-
-                                    if (isUserAdmin) {
-                                        grantAdminRole(user)
-                                    } else {
-                                        grantUserRole(user)
-                                    }
-
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Registration successful!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    grantUserRole(user, username, email, selectedRole)
+                                    showToast("Registration successful!")
                                     // Navigate to another screen or handle the success scenario
                                 } else {
-                                    showToast("Failed to update user profile: ${profileUpdateTask.exception?.message}")
+                                    val errorMessage =
+                                        "Failed to update user profile: ${profileUpdateTask.exception?.message}"
+                                    showToast(errorMessage)
+                                    Log.e("ProfileUpdateTask", errorMessage, profileUpdateTask.exception)
                                 }
                             }
                     } else {
-                        showToast("Registration failed: ${task.exception?.message}")
+                        val errorMessage = "Registration failed: ${task.exception?.message}"
+                        showToast(errorMessage)
+                        Log.e("RegistrationTask", errorMessage, task.exception)
                     }
                 }
         }
@@ -89,51 +98,38 @@ class RegisterFragment : Fragment() {
         return rootView
     }
 
-    private fun grantAdminRole(user: FirebaseUser?) {
+    private fun grantUserRole(user: FirebaseUser?, username: String, email: String, role: String) {
         val userId = user?.uid ?: ""
-        val userEmail = user?.email ?: ""
+        val userEmail = email
+        val hashedPassword = hashPassword(email)
 
-        // Hash the password
-        val hashedPassword = hashPassword(userEmail)
-
-        val adminUser = User(userId, userEmail, "Admin", "admin_username", hashedPassword)
-        // Replace "admin_username" with the actual admin username or generate it based on your requirements
+        val userObject = User(userId, userEmail, username, role, hashedPassword)
 
         // Store the user data in Firebase Realtime Database
-        // Replace "users" with your desired database reference
         FirebaseDatabase.getInstance().getReference("users").child(userId)
-            .setValue(adminUser)
+            .setValue(userObject)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    showToast("Admin role granted!")
+                    showToast("$role role granted!")
+
+                    // Check the role and grant additional permissions if it's an admin
+                    if (role == "Admin") {
+                        grantAdminPermissions(userId)
+                    }
+
                 } else {
-                    showToast("Failed to grant admin role: ${task.exception?.message}")
+                    showToast("Failed to grant $role role: ${task.exception?.message}")
                 }
             }
     }
 
-    private fun grantUserRole(user: FirebaseUser?) {
-        val userId = user?.uid ?: ""
-        val userEmail = user?.email ?: ""
-
-        // Hash the password
-        val hashedPassword = hashPassword(userEmail)
-
-        val regularUser = User(userId, userEmail, "User", "user_username", hashedPassword)
-        // Replace "user_username" with the actual user username or generate it based on your requirements
-
-        // Store the user data in Firebase Realtime Database
-        // Replace "users" with your desired database reference
-        FirebaseDatabase.getInstance().getReference("users").child(userId)
-            .setValue(regularUser)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    showToast("User role granted!")
-                } else {
-                    showToast("Failed to grant user role: ${task.exception?.message}")
-                }
-            }
+    private fun grantAdminPermissions(userId: String) {
+        // Implement the logic to grant admin-specific permissions here
+        // This could include adding the user to an "admins" node in the database, etc.
+        // For demonstration purposes, let's log a message.
+        Log.d("GrantAdminPermissions", "Admin permissions granted for user: $userId")
     }
+
 
     private fun hashEmail(email: String): String {
         val bytes = MessageDigest.getInstance("SHA-256").digest(email.toByteArray())
