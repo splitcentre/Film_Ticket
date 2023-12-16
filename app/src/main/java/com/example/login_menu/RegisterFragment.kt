@@ -12,7 +12,7 @@ import com.example.login_menu.databinding.FragmentRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.firestore.FirebaseFirestore  // Import this line
+import com.google.firebase.firestore.FirebaseFirestore
 import java.security.MessageDigest
 
 private const val ARG_PARAM1 = "param1"
@@ -107,7 +107,7 @@ class RegisterFragment : Fragment() {
         val userObject = User(userId, userEmail, username, role, hashedPassword)
 
         // Store the user data in Firestore
-        db.collection("users").document(userId)
+        db.collection("User").document(userId)
             .set(userObject)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {

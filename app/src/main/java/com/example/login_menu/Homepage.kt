@@ -25,7 +25,7 @@ class Homepage : AppCompatActivity() {
 
         // Set the username in the TextView
         val usernameTextView = findViewById<TextView>(R.id.username)
-        usernameTextView.text = username
+        usernameTextView.text = "$username"
 
         // Initialize RecyclerView and FilmAdapter
         val recyclerView: RecyclerView = findViewById(R.id.list_film)
@@ -80,3 +80,4 @@ class Homepage : AppCompatActivity() {
         startActivity(intent)
     }
 }
+
