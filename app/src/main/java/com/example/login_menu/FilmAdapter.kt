@@ -58,7 +58,7 @@ class FilmAdapter(private val onItemClick: (film: FilmEntity) -> Unit) : Recycle
         return filmList.size
     }
 
-    fun submitList(list: List<film>) {
+    fun submitList(list: List<FilmEntity>) {
         filmList = list
         notifyDataSetChanged()
     }
