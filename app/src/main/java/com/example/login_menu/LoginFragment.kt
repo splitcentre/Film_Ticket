@@ -17,11 +17,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
@@ -56,15 +51,11 @@ class LoginFragment : Fragment() {
 
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(requireActivity()) { task ->
-                    // Inside the if (task.isSuccessful) block
                     if (task.isSuccessful) {
                         Log.d("LoginFragment", "Authentication success")
 
-                        // Fetch user data from Firestore to determine role
+                        // Fetch user data from Firestore to determine role and username
                         fetchUserDataAndRedirect(email)
-
-                        // Log the username to check if it's correct
-                        Log.d("LoginFragment", "Username: $email")
                     } else {
                         Log.w("LoginFragment", "Authentication failed", task.exception)
                         showToast("Authentication failed. Please check your credentials.")
@@ -76,31 +67,19 @@ class LoginFragment : Fragment() {
     }
 
     private fun fetchUserDataAndRedirect(email: String) {
-        // Query Firestore to get user data
         db.collection("User")
             .whereEqualTo("email", email)
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    // User found in Firestore
                     val user = documents.documents[0].toObject(User::class.java)
-
-                    // Determine user role (admin or user)
                     val role = user?.role ?: ""
+                    val username = user?.username ?: ""
 
                     Log.d("LoginFragment", "Role: $role")
-                    val intent = if (role == "admin") {
-                        Log.d("LoginFragment", "Redirecting to AdminActivity")
-                        Intent(activity, AdminActivity::class.java)
-                    } else {
-                        Log.d("LoginFragment", "Redirecting to Homepage")
-                        Intent(activity, Homepage::class.java)
-                    }
+                    Log.d("LoginFragment", "Username: $username")
 
-                    // Pass the email and user role to the next activity
-                    intent.putExtra("USERNAME", email)
-                    intent.putExtra("ROLE", role)
-                    startActivity(intent)
+                    redirectToActivity(role, username)
                 } else {
                     Log.w("LoginFragment", "User data not found in Firestore")
                     showToast("User data not found. Please try again.")
@@ -116,6 +95,19 @@ class LoginFragment : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
+    private fun redirectToActivity(role: String, username: String) {
+        val intent = if (role == "admin") {
+            Log.d("LoginFragment", "Redirecting to AdminActivity")
+            Intent(activity, AdminActivity::class.java)
+        } else {
+            Log.d("LoginFragment", "Redirecting to Homepage")
+            Intent(activity, Homepage::class.java)
+        }
+
+        intent.putExtra("USERNAME", username)
+        intent.putExtra("ROLE", role)
+        startActivity(intent)
+    }
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =

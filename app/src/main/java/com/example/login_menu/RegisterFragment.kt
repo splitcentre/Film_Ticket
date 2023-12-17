@@ -111,7 +111,8 @@ class RegisterFragment : Fragment() {
             .set(userObject)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    showToast("$role role granted!")
+                    showToast("$role role granted! Registration successful!")
+
                     // Check the role and grant additional permissions if it's an admin
                     if (role == "Admin") {
                         grantAdminPermissions(userId)
