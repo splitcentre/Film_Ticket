@@ -10,12 +10,9 @@ class FilmRepository(private val filmDao: FilmDao) {
         }
     }
 
-    suspend fun getAllFilms(): List<film> {
+    suspend fun getAllFilms(): List<FilmEntity> {
         return withContext(Dispatchers.IO) {
-            val filmEntities = filmDao.getAllFilms()
-            filmEntities.map {
-                film(it.filmImage, it.filmName, it.filmReleaseDate, it.filmSynopsis)
-            }
+            filmDao.getAllFilms()
         }
     }
 }

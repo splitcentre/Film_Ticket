@@ -12,3 +12,4 @@ data class FilmEntity(
     val filmReleaseDate: Int,
     val filmSynopsis: String
 )
+

@@ -1,6 +1,5 @@
 package com.example.login_menu
 
-import FilmAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
@@ -11,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.login_menu.database.FilmEntity
 import com.example.login_menu.database.film
 import com.google.firebase.database.*
+import com.google.firebase.database.ValueEventListener
 
 class Homepage : AppCompatActivity() {
     private lateinit var username: String
@@ -36,20 +36,34 @@ class Homepage : AppCompatActivity() {
 
         loadFilmData()
     }
+    fun convertFirebaseFilmsToRoomEntities(firebaseFilms: List<film>): List<FilmEntity> {
+        return firebaseFilms.map { firebaseFilm ->
+            FilmEntity(
+                filmImage = firebaseFilm.filmImage,
+                filmName = firebaseFilm.filmName,
+                filmReleaseDate = firebaseFilm.filmReleaseDate,
+                filmSynopsis = firebaseFilm.filmSynopsis
+            )
+        }
+    }
 
     private fun loadFilmData() {
-        val filmList = mutableListOf<film>()
+        val firebaseFilmList = mutableListOf<film>()
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                filmList.clear()
+                firebaseFilmList.clear()
 
                 for (filmSnapshot in snapshot.children) {
                     val filmData = filmSnapshot.getValue(film::class.java)
-                    filmData?.let { filmList.add(it) }
+                    filmData?.let { firebaseFilmList.add(it) }
                 }
 
-                filmAdapter.submitList(filmList)
+                // Convert List<film> to List<FilmEntity>
+                val roomFilmList = convertFirebaseFilmsToRoomEntities(firebaseFilmList)
+
+                // Update the adapter with converted data
+                filmAdapter.submitList(roomFilmList)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -57,6 +71,7 @@ class Homepage : AppCompatActivity() {
             }
         })
     }
+
 
     private fun onFilmItemClick(film: FilmEntity) {
         val intent = Intent(this, FilmDetailsActivity::class.java)
