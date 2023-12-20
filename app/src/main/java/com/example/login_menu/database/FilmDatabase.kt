@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Database(entities = [FilmEntity::class], version = 5, exportSchema = false)
 abstract class FilmDatabase : RoomDatabase() {
@@ -27,15 +28,13 @@ abstract class FilmDatabase : RoomDatabase() {
             }
         }
 
-        suspend fun insertDefaultFilmEntity(context: Context) {
-            val defaultFilmEntity = FilmEntity(
-                filmImage = "",
-                filmName = "",
-                filmReleaseDate = 0,
-                filmSynopsis = ""
-            )
+        suspend fun insertDefaultFilmEntities(context: Context, defaultFilms: List<FilmEntity>) {
+            // Save data to Room
+            getInstance(context).filmDao().insertFilm(defaultFilms)
 
-            getInstance(context).filmDao().insertFilm(defaultFilmEntity)
+            // Save data to Firestore
+            FilmRepository.getInstance(getInstance(context).filmDao(), FirebaseFirestore.getInstance())
+                .addFilm(defaultFilms)
         }
     }
 }

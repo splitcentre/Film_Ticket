@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.login_menu.FilmDetailsActivity
 import com.example.login_menu.database.FilmEntity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QueryDocumentSnapshot
@@ -15,7 +16,7 @@ import com.google.firebase.firestore.QuerySnapshot
 class Homepage : AppCompatActivity() {
 
     private lateinit var username: String
-    private lateinit var filmAdapter: FilmAdapter
+    private lateinit var filmCardAdapter: FilmCardAdapter
     private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,10 +29,10 @@ class Homepage : AppCompatActivity() {
         usernameTextView.text = username
 
         val recyclerView: RecyclerView = findViewById(R.id.list_film)
-        filmAdapter = FilmAdapter { film -> onFilmItemClick(film) }
+        filmCardAdapter = FilmCardAdapter { film -> onFilmItemClick(film) }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = filmAdapter
+        recyclerView.adapter = filmCardAdapter
 
         firestore = FirebaseFirestore.getInstance()
 
@@ -48,13 +49,13 @@ class Homepage : AppCompatActivity() {
                     val film = FilmEntity(
                         filmImage = document.getString("filmImage") ?: "",
                         filmName = document.getString("filmName") ?: "",
-                        filmReleaseDate = document.getString("filmReleaseDate")?.toInt() ?: 0,
+                        filmReleaseDate = document.getLong("filmReleaseDate")?.toInt() ?: 0,
                         // Add other fields if needed
                     )
                     firestoreFilmList.add(film)
                 }
 
-                filmAdapter.submitList(firestoreFilmList)
+                filmCardAdapter.submitList(firestoreFilmList)
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(
@@ -66,9 +67,9 @@ class Homepage : AppCompatActivity() {
     }
 
     private fun onFilmItemClick(film: FilmEntity) {
+        // Redirect to FilmDetailsActivity with film data
         val intent = Intent(this, FilmDetailsActivity::class.java)
         intent.putExtra("FILM_NAME", film.filmName)
-        intent.putExtra("FILM_RELEASE_DATE", film.filmReleaseDate)
         // Add other fields if needed
         startActivity(intent)
     }

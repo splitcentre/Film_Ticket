@@ -23,17 +23,20 @@ class FilmRepository(
         }
     }
 
-    suspend fun addFilm(film: FilmEntity) {
+    suspend fun addFilm(film: List<FilmEntity>) {
         // Save data to Room
         filmDao.insertFilm(film)
 
         // Save data to Firestore
-        firestore.collection("films")
-            .document(film.id)
-            .set(film)
-            .addOnSuccessListener { Log.d("FilmRepository", "DocumentSnapshot successfully written!") }
-            .addOnFailureListener { e -> Log.w("FilmRepository", "Error writing document", e) }
+        for (filmEntity in film) {
+            firestore.collection("films")
+                .document(filmEntity.id.toString())  // Assuming id is of type Long or another appropriate type
+                .set(filmEntity)
+                .addOnSuccessListener { Log.d("FilmRepository", "DocumentSnapshot successfully written!") }
+                .addOnFailureListener { e -> Log.w("FilmRepository", "Error writing document", e) }
+        }
     }
+
 
 
     suspend fun insertFilm(film: List<FilmEntity>) {

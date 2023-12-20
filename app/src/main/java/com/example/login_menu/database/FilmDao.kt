@@ -12,7 +12,7 @@ interface FilmDao {
     suspend fun insert(film: List<FilmEntity>)
 
     @Insert
-    suspend fun insertFilm(films: List<FilmEntity>)
+    suspend fun insertFilm(films: kotlin.collections.List<com.example.login_menu.database.FilmEntity>)
 
     @Query("SELECT * FROM films")
     suspend fun getAllFilms(): List<FilmEntity>

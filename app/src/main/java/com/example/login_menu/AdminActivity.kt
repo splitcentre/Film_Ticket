@@ -6,7 +6,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.media3.common.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.login_menu.database.FilmDatabase
@@ -21,7 +20,6 @@ import kotlinx.coroutines.withContext
 class AdminActivity : AppCompatActivity() {
 
     private lateinit var username: String
-    private lateinit var filmAdapter: FilmAdapter
     private lateinit var filmRepository: FilmRepository
     private lateinit var roomDatabase: FilmDatabase
     private lateinit var firestore: FirebaseFirestore
@@ -37,14 +35,11 @@ class AdminActivity : AppCompatActivity() {
         val usernameTextView = findViewById<TextView>(R.id.username)
         usernameTextView.text = "$username"
 
-        // Initialize RecyclerView and FilmAdapter
+        // Initialize RecyclerView
         val recyclerView: RecyclerView = findViewById(R.id.list_film)
 
         // Set the layout manager for the RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
-
-        // Set the adapter for the RecyclerView
-        recyclerView.adapter = filmAdapter
 
         // Initialize Room database and repository
         roomDatabase = FilmDatabase.getInstance(applicationContext)
@@ -52,7 +47,7 @@ class AdminActivity : AppCompatActivity() {
         filmRepository = FilmRepository(roomDatabase.filmDao(), firestore)
 
         // Load film data from Firestore
-        loadFilmDataFromFirestore()
+        loadFilmDataFromFirestore(recyclerView)
 
         // Handle "Add Movie" button click
         val addMovieButton: Button = findViewById(R.id.addmovie)
@@ -63,7 +58,7 @@ class AdminActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadFilmDataFromFirestore() {
+    private fun loadFilmDataFromFirestore(recyclerView: RecyclerView) {
         lifecycleScope.launch(Dispatchers.IO) {
             val db = FirebaseFirestore.getInstance()
             val collectionRef = db.collection("films")
@@ -76,9 +71,19 @@ class AdminActivity : AppCompatActivity() {
             }
 
             withContext(Dispatchers.Main) {
+                // Create a new adapter with the loaded film data
+                val filmAdapter = FilmAdapter { film ->
+                    // Handle item click logic here
+                    // For example, you can open a new activity or show details
+                }
+
+                // Set the adapter for the RecyclerView
+                recyclerView.adapter = filmAdapter
+
+                // Submit the loaded film data to the adapter
                 filmAdapter.submitList(filmList)
             }
         }
     }
-
 }
+

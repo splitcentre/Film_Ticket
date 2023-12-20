@@ -11,13 +11,12 @@ import com.example.login_menu.database.FilmEntity
 import com.example.login_menu.databinding.FilmViewBinding
 import kotlinx.coroutines.launch
 
-class FilmAdapter(private val onItemClick: (film: FilmEntity) -> Unit) :
+class FilmAdapter(private val onItemClick: (FilmEntity) -> Unit) :
     RecyclerView.Adapter<FilmAdapter.FilmViewHolder>() {
 
     private var filmList: List<FilmEntity> = emptyList()
 
     inner class FilmViewHolder(val binding: FilmViewBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val filmViewModel = FilmViewModel()
 
         init {
             itemView.setOnClickListener {
@@ -39,7 +38,13 @@ class FilmAdapter(private val onItemClick: (film: FilmEntity) -> Unit) :
             binding.deleteButton.setOnClickListener {
                 // Handle delete button click
                 val film = filmList[adapterPosition]
+
+                // Create an instance of FilmViewModel
+                val filmViewModel = FilmViewModel()
+
+                // Call the deleteFilm function on the FilmViewModel instance
                 filmViewModel.deleteFilm(film)
+
                 // Optional: Remove the film from the list to update the UI
                 filmList = filmList.filterNot { it.id == film.id }
                 notifyDataSetChanged()
@@ -82,8 +87,7 @@ class FilmAdapter(private val onItemClick: (film: FilmEntity) -> Unit) :
     inner class FilmViewModel : ViewModel() {
         fun deleteFilm(film: FilmEntity) {
             viewModelScope.launch {
-                // Perform the deletion operation in Firestore
-                // Replace with your actual Firestore implementation
+                // Perform the deletion operation (replace with your actual implementation)
                 // firestore.collection("films").document(film.id).delete().await()
             }
         }

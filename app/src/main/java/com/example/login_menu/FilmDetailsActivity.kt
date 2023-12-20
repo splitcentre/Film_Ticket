@@ -43,7 +43,8 @@ class FilmDetailsActivity : AppCompatActivity() {
                     val document = querySnapshot.documents[0]
 
                     // Extract data from the document
-                    val filmReleaseDate = document.getString("filmReleaseDate") ?: ""
+                    val filmReleaseDateLong = document.getLong("filmReleaseDate") ?: 0
+                    val filmReleaseDate = filmReleaseDateLong.toString()
                     val filmSynopsis = document.getString("filmSynopsis") ?: ""
                     // Add other fields if needed
 
@@ -72,4 +73,5 @@ class FilmDetailsActivity : AppCompatActivity() {
                 // You can show an error message or log the exception
             }
     }
+
 }
