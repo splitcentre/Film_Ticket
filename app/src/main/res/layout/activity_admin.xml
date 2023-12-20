@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffff"
     tools:context=".AdminActivity"
     android:orientation="vertical">
     <include
@@ -20,6 +21,7 @@
             <TextView
                 android:id="@+id/hello"
                 android:orientation="vertical"
+                android:textColor="#000000"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Hallo,"
@@ -28,6 +30,7 @@
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:textColor="#000000"
                 app:layout_constraintTop_toBottomOf="@+id/hello"
                 android:text="Karto"
                 android:textSize="25dp"/>
@@ -43,6 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="List Movie"
+                android:textColor="#000000"
                 android:textSize="25dp"
                 app:layout_constraintTop_toBottomOf="@+id/addmovie"/>
             <androidx.recyclerview.widget.RecyclerView

@@ -11,11 +11,14 @@ interface FilmDao {
     @Insert
     suspend fun insertFilm(film: FilmEntity)
 
+    @Insert
+    suspend fun insertFilm(films: List<FilmEntity>)
+
     @Query("SELECT * FROM films")
     suspend fun getAllFilms(): List<FilmEntity>
 
     @Query("SELECT * FROM films WHERE id = :filmId")
-    suspend fun getFilmById(filmId: Long): FilmEntity?
+    suspend fun getFilmById(filmId: String): FilmEntity?
 
     @Update
     suspend fun updateFilm(film: FilmEntity)

@@ -5,41 +5,58 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.EditText
 import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.login_menu.database.FilmEntity
-import com.google.firebase.database.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.io.InputStream
 
 class AddFilm : AppCompatActivity() {
-
+    private lateinit var firestore: FirebaseFirestore
     private lateinit var database: DatabaseReference
     private lateinit var storageReference: StorageReference
+    private lateinit var imageView: ImageView
+    private lateinit var imageStream: InputStream
+    private val PICK_IMAGE_REQUEST = 1
 
-    companion object {
-        private const val PICK_IMAGE_REQUEST = 1
-    }
+    private var selectedImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_film)
 
-        // Initialize Firebase Database reference
-        database = FirebaseDatabase.getInstance().reference.child("films")
-
+        // Initialize Firestore
+        firestore = FirebaseFirestore.getInstance()
         // Initialize Firebase Storage reference
         storageReference = FirebaseStorage.getInstance().reference.child("film_images")
 
+        imageView = findViewById(R.id.image_view)
+
         val btnSubmitFilm = findViewById<Button>(R.id.submitfilm)
+        val btnSelectImage = findViewById<Button>(R.id.selectimage)
 
         btnSubmitFilm.setOnClickListener {
-            // Obtain an InputStream from the user's selected image
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, PICK_IMAGE_REQUEST)
+            // Check if an image is selected before submitting
+            if (selectedImageUri != null) {
+                // Upload the image to Firebase Storage and save film details to Firestore Database
+                addFilmToDatabase(selectedImageUri!!)
+            } else {
+                showToast("Please select an image.")
+            }
+        }
+
+        btnSelectImage.setOnClickListener {
+            // Open the image picker
+            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
         }
     }
 
@@ -47,94 +64,76 @@ class AddFilm : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            val imageUri = data.data
-            val imageStream: InputStream? = contentResolver.openInputStream(imageUri!!)
+            // Store the selected image URI
+            selectedImageUri = data.data
 
-            // Now you can use imageStream in your addFilmToDatabase function
-            // Make sure to handle null or errors appropriately
-            if (imageStream != null) {
-                addFilmToDatabase(imageStream)
-            } else {
-                // Handle the case where the InputStream is null
-            }
+            // Display the selected image
+            imageView.setImageURI(selectedImageUri)
         }
     }
 
-    private fun addFilmToDatabase(userImageInputStream: InputStream) {
-        // Retrieve data from UI components
-        val titleEditText: EditText = findViewById(R.id.Title_input)
-        val releaseDateEditText: EditText = findViewById(R.id.input_genre)
-        val synopsisEditText: EditText = findViewById(R.id.synopsis)
+    private fun addFilmToDatabase(imageUri: Uri) {
+        // Retrieve film details from the form
+        val filmTitle = findViewById<EditText>(R.id.Title_input).text.toString()
+        val releaseDate = findViewById<EditText>(R.id.input_genre).text.toString().toInt()
+        val synopsis = findViewById<EditText>(R.id.synopsis).text.toString()
 
-        val title = titleEditText.text.toString()
-        val releaseDate = releaseDateEditText.text.toString().toIntOrNull() ?: 0
-        val synopsis = synopsisEditText.text.toString()
-
-        // Validate input
-        if (title.isEmpty() || releaseDate == 0 || synopsis.isEmpty()) {
-            // Show an error message or toast if any field is empty or if releaseDate is not a valid integer
-            return
-        }
-
-        // Generate a unique filename for the image
-        val imageName = "film_image_${System.currentTimeMillis()}.jpg"
-
-        // Create a reference to the image in Firebase Storage
-        val imageRef: StorageReference = storageReference.child(imageName)
+        // Create a unique key for the film
+        val filmId = firestore.collection("films").document().id
 
         // Upload the image to Firebase Storage
-        val uploadTask: UploadTask = imageRef.putStream(userImageInputStream)
+        val imageRef = storageReference.child("$filmId.jpg")
 
-        // Handle the success or failure of the image upload
-        uploadTask.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                // Image upload successful, get the download URL
-                imageRef.downloadUrl.addOnSuccessListener { uri ->
-                    // Replace the placeholder values with actual data, including the image URL
-                    val film = FilmEntity(
-                        filmImage = uri.toString(),
-                        filmName = title,
-                        filmReleaseDate = releaseDate,
-                        filmSynopsis = synopsis
-                    )
-
-                    // Check if the film with the same name already exists
-                    val query: Query = database.orderByChild("filmName").equalTo(title)
-                    query.addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (snapshot.exists()) {
-                                // Film with the same name already exists, update the data
-                                for (filmSnapshot in snapshot.children) {
-                                    val filmId: String? = filmSnapshot.key
-                                    filmId?.let {
-                                        database.child(it).setValue(film)
-                                    }
+        try {
+            val imageStream: InputStream? = contentResolver.openInputStream(imageUri)
+            if (imageStream != null) {
+                val byteArray = getByteArrayFromInputStream(imageStream)
+                imageRef.putBytes(byteArray)
+                    .addOnSuccessListener { taskSnapshot ->
+                        // Image uploaded successfully
+                        // Get the download URL for the image
+                        imageRef.downloadUrl.addOnSuccessListener { uri ->
+                            // Save film details and image URL to Firestore Database
+                            val filmEntity = FilmEntity(filmId, uri.toString(), filmTitle, releaseDate, synopsis)
+                            firestore.collection("films").document(filmId)
+                                .set(filmEntity)
+                                .addOnSuccessListener {
+                                    // Display a success message
+                                    showToast("Film Submitted!")
+                                    // Finish the activity or perform other actions
+                                    finish()
                                 }
-                            } else {
-                                // Film with the same name doesn't exist, add new data
-                                val filmId: String? = database.push().key
-                                filmId?.let {
-                                    database.child(it).setValue(film)
+                                .addOnFailureListener { exception ->
+                                    // Handle the error
+                                    showToast("Error adding film to Firestore: ${exception.message}")
                                 }
-                            }
-
-                            // Clear input fields
-                            titleEditText.text.clear()
-                            releaseDateEditText.text.clear()
-                            synopsisEditText.text.clear()
-
-                            // Show notification here if needed
                         }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            // Handle error
-                        }
-                    })
-                }
+                    }
+                    .addOnFailureListener { exception ->
+                        // Handle the error
+                        showToast("Error uploading image: ${exception.message}")
+                    }
             } else {
-                // Image upload failed, handle the error
-                // You can show a toast or log an error message
+                showToast("Error getting image stream.")
             }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
+
+    private fun getByteArrayFromInputStream(inputStream: InputStream): ByteArray {
+        val buffer = ByteArrayOutputStream()
+        var n: Int
+        val data = ByteArray(16384)
+        while (inputStream.read(data, 0, data.size).also { n = it } != -1) {
+            buffer.write(data, 0, n)
+        }
+        buffer.flush()
+        return buffer.toByteArray()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
 }
+
