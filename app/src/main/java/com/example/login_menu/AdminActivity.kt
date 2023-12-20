@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.login_menu.database.FilmDatabase
 import com.example.login_menu.database.FilmEntity
 import com.example.login_menu.database.FilmRepository
-import com.example.login_menu.database.film
-import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -22,7 +21,7 @@ class AdminActivity : AppCompatActivity() {
     private lateinit var filmAdapter: FilmAdapter
     private lateinit var filmRepository: FilmRepository
     private lateinit var roomDatabase: FilmDatabase
-    private lateinit var firebaseDatabase: DatabaseReference
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,12 +46,10 @@ class AdminActivity : AppCompatActivity() {
 
         // Initialize Room database and repository
         roomDatabase = FilmDatabase.getInstance(applicationContext)
-        filmRepository = FilmRepository(roomDatabase.filmDao())
+        firestore = FirebaseFirestore.getInstance() // Initialize Firestore here
+        filmRepository = FilmRepository(roomDatabase.filmDao(), firestore)
 
-        // Initialize Firebase Database
-        firebaseDatabase = FirebaseDatabase.getInstance().reference.child("films")
-
-        // Load film data from both Firebase and Room
+        // Load film data from Firestore
         loadFilmData()
 
         // Handle "Add Movie" button click
@@ -65,28 +62,11 @@ class AdminActivity : AppCompatActivity() {
     }
 
     private fun loadFilmData() {
-        // Load film data from Firebase
-        firebaseDatabase.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val firebaseFilmList = mutableListOf<FilmEntity>()
-
-                // Parse Firebase data and add to the list
-                for (filmSnapshot in snapshot.children) {
-                    val filmData = filmSnapshot.getValue(FilmEntity::class.java)
-                    filmData?.let { firebaseFilmList.add(it) }
-                }
-
-                // Update the adapter with Firebase entities
-                filmAdapter.submitList(firebaseFilmList)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Handle Firebase error
-            }
-        })
-
-        // Load film data from Room database
         lifecycleScope.launch(Dispatchers.Main) {
+            // Fetch data from Firestore and save to Room database
+            filmRepository.fetchDataFromFirestoreAndSaveToLocal()
+
+            // Load film data from Room database
             val roomFilmList = filmRepository.getAllFilms()
 
             // Update the adapter with Room entities
