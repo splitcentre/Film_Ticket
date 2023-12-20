@@ -9,7 +9,7 @@ import androidx.room.Update
 @Dao
 interface FilmDao {
     @Insert
-    suspend fun insertFilm(film: FilmEntity)
+    suspend fun insert(film: List<FilmEntity>)
 
     @Insert
     suspend fun insertFilm(films: List<FilmEntity>)
