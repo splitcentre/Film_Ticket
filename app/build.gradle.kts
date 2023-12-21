@@ -4,7 +4,7 @@ plugins {
     id("com.google.gms.google-services")
     id("kotlin-kapt")
 }
-
+//no error
 android {
     namespace = "com.example.login_menu"
     compileSdk = 34
